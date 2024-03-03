@@ -4,6 +4,8 @@ import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
 import Home from "./pages/Home/Home";
 import { auth, app } from "./firebase";
+import "react-toastify/dist/ReactToastify.css";
+import { Bounce, ToastContainer } from "react-toastify";
 
 function App() {
   const [CurrUser, setCurrUser] = useState({});
@@ -28,10 +30,24 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home email={CurrUser.email} />} />
-        <Route path="/login" element={<Login />} />
+        <Route index element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/home" element={<Home email={CurrUser.email} />} />
       </Routes>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </>
   );
 }

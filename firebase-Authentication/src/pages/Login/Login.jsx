@@ -3,6 +3,7 @@ import { auth, app } from "../../firebase";
 import InputField from "../../Compoenets/InputField";
 import { Link , useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { ToastAlert } from "../../utils/toast";
 
 const Login = () => {
 
@@ -13,25 +14,23 @@ const Login = () => {
     email:"",
     pass:"",
   })
-  const [error,setError] =useState(false)
-  const [errorMsg,setErrorMsg] =useState("")
+  
 
   const handleLogin = ()=>{
     if ( !values.email || !values.pass) {
-      setError(true);
-      setErrorMsg("Fill all fields");
+      ToastAlert("Fill All Fields", "warning");
       return;
     }
-    setErrorMsg("");
+    
     signInWithEmailAndPassword(auth, values.email, values.pass)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        navigate('/') 
+        ToastAlert("Sucessfully loged in", "success");
+        navigate('/home') 
       })
       .catch((error) => {
-        setError(true)
-        setErrorMsg(error.message);
+        ToastAlert(error.message, "error");
       });
   }
   
@@ -58,9 +57,7 @@ const Login = () => {
             setValues((prev) => ({ ...prev, pass: e.target.value }));
           }}
         />
-        {error && (
-          <p className="text-red-600 text-center font-bold mt-2">{errorMsg}</p>
-        )}
+        
         <button
           onClick={handleLogin}
           className="my-4 py-2 tracking-wider font-bold text-lg bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300 text-white">

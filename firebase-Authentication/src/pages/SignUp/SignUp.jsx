@@ -4,6 +4,8 @@ import { auth, app } from "../../firebase";
 import InputField from "../../Compoenets/InputField";
 import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { ToastAlert } from "../../utils/toast";
+
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -12,27 +14,24 @@ const SignUp = () => {
     email: "",
     pass: "",
   });
-  const [error, seterror] = useState(false);
-  const [ErrorMsg, setErrorMsg] = useState("");
+  
 
 
   const handleSubmit = () => {
     if (!values.fname || !values.email || !values.pass) {
-      seterror(true);
-      setErrorMsg("Fill all fields");
+      ToastAlert("Fill All Fields", "warning");
       return;
     }
-    setErrorMsg("");
+    
     createUserWithEmailAndPassword(auth, values.email, values.pass)
       .then((userCredential) => {
-        seterror(false);
-        setErrorMsg("");
+        ToastAlert("Sucessfully Signed In","success")
         const user = userCredential.user;
-        navigate('/login')
+        console.log(user)
+        navigate('/')
       })
       .catch((error) => {
-        seterror(true);
-        setErrorMsg(error.message.slice());
+        ToastAlert(error.message, "error");
         console.log("error", error);
       });
   };
@@ -68,9 +67,6 @@ const SignUp = () => {
             setvalue((prev) => ({ ...prev, pass: e.target.value }));
           }}
         />
-        {error && (
-          <p className="text-red-600 text-center font-bold mt-2">{ErrorMsg}</p>
-        )}
         <button
           onClick={handleSubmit}
           className="my-4 py-2 tracking-wider font-bold text-lg bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300 text-white">
@@ -78,7 +74,7 @@ const SignUp = () => {
         </button>
         <footer>
           Already have an Account{" "}
-          <Link to={"/login"} className="font-bold text-violet-700">
+          <Link to={"/"} className="font-bold text-violet-700">
             Login
           </Link>{" "}
         </footer>
